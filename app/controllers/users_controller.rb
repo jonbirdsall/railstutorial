@@ -37,9 +37,9 @@ class UsersController < ApplicationController
     # attempt to save the new user, log the user in if successful and redirect
     # to user details page
     if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      @user.send_activation_email
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       # something went wrong, re-render the new user form with previously entered
       # information, errors will be displayed above form
