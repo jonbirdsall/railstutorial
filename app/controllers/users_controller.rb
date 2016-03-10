@@ -54,6 +54,8 @@ class UsersController < ApplicationController
     # find the user by the user id in the route params
     # (this will likely be moved to its own before method)
     @user = User.find(params[:id])
+    
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
   
   # render users/edit.html.erb
@@ -101,14 +103,7 @@ class UsersController < ApplicationController
     
     # Before filters
     
-    # confirms a logged-in user
-    def logged_in_user
-      unless logged_in?
-        store_location
-        flash[:danger] = "Please log in."
-        redirect_to login_url
-      end
-    end
+
     
     # confirms the correct user is logged in
     def correct_user
