@@ -5,7 +5,8 @@
 
 class UsersController < ApplicationController
   # make sure the user is logged in before trying to do udate or edit actions
-  before_action :logged_in_user, only: [:edit, :update, :index, :destroy]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
+                                        :following, :followers]
   
   # make sure the correct user is loged in before trying to do update or edit actions
   before_action :correct_user, only: [:edit, :update]
@@ -44,8 +45,8 @@ class UsersController < ApplicationController
       # something went wrong, re-render the new user form with previously entered
       # information, errors will be displayed above form
       render 'new'
-    end
-  end
+    end # if
+  end # create
   
   # render users/show.html.erb view of user with id in url params
   # Rt: GET /users/:id
@@ -56,7 +57,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     
     @microposts = @user.microposts.paginate(page: params[:page])
-  end
+  end # show
   
   # render users/edit.html.erb
   # Rt: GET users/:id/edit
@@ -65,7 +66,7 @@ class UsersController < ApplicationController
     # find the user by the user id in the route params
     # (this will likely be moved to its own before method)
     @user = User.find(params[:id])
-  end
+  end # edit
   
   # handle submission of edit user form
   # Rt: PATCH users/:id
@@ -81,8 +82,8 @@ class UsersController < ApplicationController
     else
       # something went wrong, go back to the edit form with existing user info
       render 'edit'
-    end
-  end
+    end # if
+  end # update
   
   # delete user from the database
   # Rt: DELETE /users/:id
@@ -91,7 +92,21 @@ class UsersController < ApplicationController
     User.find(params[:id]).destroy
     flash[:success] = "User deleted"
     redirect_to users_url
-  end
+  end # destroy
+  
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.following.paginate(page: params[:page])
+    render 'show_follow'
+  end # following
+  
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow'
+  end # followers
   
   private
     
